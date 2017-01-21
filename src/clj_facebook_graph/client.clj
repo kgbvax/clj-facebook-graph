@@ -69,9 +69,11 @@
                 the-client (wrap-facebook-data-extractor client)]
             (if paging
               (if-let [url (get-in body [:paging :next])]
-                (lazy-cat extraction
-                          (the-client {:method :get :url url :extract :data :paging true}))
+                (let [escaped-url (clojure.string/escape url  {\| "%7C"})] 
+                   (lazy-cat extraction
+                          (the-client {:method :get :url escaped-url :extract :data :paging true}))
                 [])
+                )
               extraction)))
         response))))
 
